@@ -12,6 +12,7 @@ import productTypes from '@modules/product/schema/product'
 import couponsTypes from '@modules/coupons/schema/coupons'
 
 import { authResolvers } from '@modules/auth/resolvers/index'
+import { userResolvers } from '@modules/user/resolvers/index'
 import { rolesResolvers } from '@modules/role/resolvers/index'
 import { productResolvers } from '@modules/product/resolvers/index'
 import { couponResolvers } from '@modules/coupons/resolvers/index'
@@ -47,6 +48,7 @@ const typeDefs = mergeTypeDefs([Query, authTypes, userTypes, roleTypes, productT
 const resolvers = _.merge(
 	resolver,
 	rolesResolvers,
+	userResolvers,
 	authResolvers,
 	productResolvers,
 	couponResolvers
