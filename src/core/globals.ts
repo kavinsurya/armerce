@@ -5,7 +5,9 @@ import path from 'path'
 import _ from 'lodash'
 import { User } from '@models/user'
 import { Role } from '@models/role'
-import { NewsLetter } from '@models/newsletter'
+import { Product } from '@models/product'
+import { Coupon } from '@models/coupon'
+import { Subcribe } from '@models/subscriptions'
 import DataSources from '@datasources/index'
 
 const { ObjectId } = Schema.Types
@@ -15,8 +17,10 @@ const config: ConfigInterface = Config()
 const Models: {
 	Role: typeof Role
 	User: typeof User
-	NewsLetter: typeof NewsLetter
-} = { Role, User, NewsLetter }
+	Product: typeof Product
+	Coupon: typeof Coupon
+	Subcribe: typeof Subcribe
+} = { Role, User, Product, Coupon, Subcribe }
 
 // Export Global Variables
 export { Logger }

@@ -35,12 +35,6 @@ class JWTHelper {
 				user.permissions = _.union(user.permissions || [], user.roleId['permissions'] || [])
 			}
 
-			if (user?.passwordChangedAt) {
-				if (user.changedPasswordAfter(verification.iat) && !user.isDeleted) {
-					return null
-				}
-			}
-
 			delete user?.password
 			return user
 		}
