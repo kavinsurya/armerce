@@ -3,7 +3,7 @@ import { Schema, model, Model, Document } from 'mongoose'
 import { BaseModel } from '@core/database'
 import { Role } from '@core/constants/roles'
 import { Password } from '@helpers/password'
-import { GenerateRandomNumberOfLength, GenerateRandomStringOfLength } from '@core/utils'
+import { GenerateRandomNumberOfLength } from '@core/utils'
 const { ObjectId } = Schema.Types
 
 export interface UserInput {

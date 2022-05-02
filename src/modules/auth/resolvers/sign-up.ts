@@ -13,15 +13,6 @@ interface SignupPayload {
 		mobile: string
 		password: string
 		profilePic?: string
-		coverPic?: string
-		description?: string
-		socialCreds?: {
-			facebook?: string
-			twitter?: string
-			instagram?: string
-			website?: string
-			discord?: string
-		}
 	}
 }
 
@@ -43,16 +34,7 @@ export const signUp = {
 		): Promise<SignupResponse> {
 			Logger.info('Inside signUp Resolver')
 			try {
-				const {
-					fullName,
-					email,
-					countryCode,
-					mobile,
-					password,
-					coverPic,
-					description,
-					socialCreds,
-				} = input
+				const { fullName, email, countryCode, mobile, password } = input
 				let { profilePic } = input
 				if (!profilePic) {
 					profilePic = AvatarHelper.getAvatar()
@@ -92,9 +74,6 @@ export const signUp = {
 							mobile,
 							password,
 							profilePic,
-							coverPic,
-							description,
-							socialCreds,
 							accountType: Role.USER,
 							roleId: role._id,
 						},
