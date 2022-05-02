@@ -7,8 +7,6 @@ import { GenerateRandomNumberOfLength, GenerateRandomStringOfLength } from '@cor
 const { ObjectId } = Schema.Types
 
 export interface UserInput {
-	username: string
-	walletAddress?: string
 	roleId: typeof ObjectId
 }
 
@@ -51,117 +49,32 @@ export interface UserModel extends Model<UserSchemaDoc> {
 
 export interface UserDoc extends BaseModel, Document {
 	_id: typeof ObjectId
-	username?: string
 	fullName: string
-	walletAddress?: string
 	email?: string
-	emailVerifiedAt?: Date
 	countryCode?: string
 	mobile?: string
-	mobileVerifiedAt?: Date
 	password?: string
-	passwordChangedAt?: Date
 	permissions?: number[]
-	isEmailVerified?: boolean
 	roleId: typeof ObjectId
-	totalBuyVolume?: number
-	totalSellVolume?: number
-	totalVolume24Hrs?: number
-	totalVolume7Days?: number
-	totalVolume30Days?: number
-	totalSaleVolume24Hrs?: number
-	totalSaleVolume7Days?: number
-	totalSaleVolume30Days?: number
-	verification?: {
-		codeType: string
-		referenceCode: string
-		code: string
-	}[]
-	FCMToken?: string[]
 	accountType: Role
 	profilePic?: string
-	coverPic?: string
-	description?: string
-	socialCreds?: {
-		facebook?: string
-		twitter?: string
-		instagram?: string
-		website?: string
-		discord?: string
-	}
-	isFirstLogin?: boolean
-	isQrGenerated?: boolean
-	followingCount?: number
-	followerCount?: number
-	isVerified?: boolean
-	isVerifiedFromBlockchain?: boolean
 	isActive: boolean
-	isBlocked: boolean
 }
 
 const UserSchema = new Schema<UserSchemaDoc>(
 	{
-		username: { type: String, unique: true, sparse: true },
 		fullName: { type: String },
 		email: { type: String, unique: true, sparse: true },
-		emailVerifiedAt: Date,
-		isEmailVerified: { type: Boolean, default: false },
 		countryCode: { type: String },
-		mobile: { type: String, unique: true, sparse: true },
-		mobileVerifiedAt: Date,
 		password: { type: String, select: false },
-		passwordChangedAt: { type: Date },
 		permissions: [Number],
 		roleId: { type: ObjectId, ref: 'Role' },
-
-		verification: {
-			type: [
-				{
-					codeType: {
-						type: String,
-						enum: [
-							'forgotPassword',
-							'resetPassword',
-							'email',
-							'mobile',
-							'googleAuth',
-							'twoFA',
-							null,
-						],
-					},
-					referenceCode: String,
-					code: String,
-				},
-			],
-			_id: false,
-			select: false,
-		},
-
 		profilePic: { type: String },
-		coverPic: { type: String },
-		description: { type: String },
-		socialCreds: {
-			type: {
-				facebook: String,
-				twitter: String,
-				instagram: String,
-				website: String,
-				discord: String,
-			},
-			_id: false,
-		},
 		accountType: {
 			type: String,
 			default: Role.USER,
 			enum: [Role.USER, Role.SUPER_ADMIN, Role.ADMIN, Role.SUB_ADMIN],
 		},
-		isFirstLogin: { type: Boolean, default: true },
-		isQrGenerated: { type: Boolean, default: false },
-		followingCount: { type: Number, default: 0 },
-		followerCount: { type: Number, default: 0 },
-		isVerified: { type: Boolean, default: false },
-		isVerifiedFromBlockchain: { type: Boolean, default: false },
-		isBlocked: { type: Boolean, default: false },
 		isDeleted: { type: Boolean, default: false },
 		isActive: { type: Boolean, default: true },
 		createdById: { type: ObjectId, ref: 'User', select: false },
@@ -179,7 +92,6 @@ UserSchema.pre('save', async function (done) {
 	if (this.isModified('password')) {
 		const hashed = await Password.toHash(this.get('password'))
 		this.set('password', hashed)
-		this.set('passwordChangedAt', new Date())
 	}
 	done()
 })
@@ -209,23 +121,11 @@ UserSchema.statics.getBySocialId = (provider, socialId) => {
 	return App.Models.User.findOne({ [key]: socialId })
 }
 
-// Check for password change timings
-UserSchema.methods.changedPasswordAfter = function (JWTTimestamp: number): boolean {
-	let changedTimestamp: number
-
-	if (this.passwordChangedAt) {
-		changedTimestamp = Number(new Date(this.passwordChangedAt).getTime() / 1000)
-	}
-
-	return JWTTimestamp < changedTimestamp
-}
-
 //  Create Validation Codes
 UserSchema.methods.createVerificationCode = async function (codeType: string): Promise<void> {
 	await this.verification.push({
 		codeType: codeType,
 		code: GenerateRandomNumberOfLength(4),
-		referenceCode: GenerateRandomStringOfLength(10),
 	})
 }
 
@@ -252,7 +152,6 @@ UserSchema.methods.createGoogleAuthVerificationCode = async function (data): Pro
 	await this.verification.push({
 		codeType: data.codeType,
 		code: data.code,
-		referenceCode: GenerateRandomStringOfLength(10),
 	})
 }
 
