@@ -8,14 +8,16 @@ import { constraintDirective, constraintDirectiveTypeDefs } from 'graphql-constr
 import userTypes from '@modules/user/schema/user'
 import authTypes from '@modules/auth/schema/auth'
 import roleTypes from '@modules/role/schema/role'
+import productTypes from '@modules/product/schema/product'
+import couponsTypes from '@modules/coupons/schema/coupons'
 
 import { authResolvers } from '@modules/auth/resolvers/index'
 import { rolesResolvers } from '@modules/role/resolvers/index'
+import { productResolvers } from '@modules/product/resolvers/index'
+import { couponResolvers } from '@modules/coupons/resolvers/index'
 
 import Permissions from '@middlewares/permissions'
 
-// If you had Query fields not associated with a
-// specific type you could put them here
 const Query = gql`
 	type Query {
 		ping: Success!
@@ -41,8 +43,14 @@ const resolver = {
 	},
 }
 
-const typeDefs = mergeTypeDefs([Query, authTypes, userTypes, roleTypes])
-const resolvers = _.merge(resolver, rolesResolvers, authResolvers)
+const typeDefs = mergeTypeDefs([Query, authTypes, userTypes, roleTypes, productTypes, couponsTypes])
+const resolvers = _.merge(
+	resolver,
+	rolesResolvers,
+	authResolvers,
+	productResolvers,
+	couponResolvers
+)
 
 const schema = constraintDirective()(
 	makeExecutableSchema({
