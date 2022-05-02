@@ -31,14 +31,14 @@ export const roles = {
 				throw new UserInputError(`${err.message}`)
 			}
 		},
-		// async createdBy(parent: any, __: any, { dataSources: { User } }, info: any) {
-		// 	Logger.info('Inside createdBy Resolver')
-		// 	try {
-		// 		return User.getUserById(parent.createdById, info)
-		// 	} catch (err) {
-		// 		Logger.error(`${err}`)
-		// 		throw new UserInputError(`${err.message}`)
-		// 	}
-		// },
+		async createdBy(parent: any, __: any, { dataSources: { User } }, info: any) {
+			Logger.info('Inside createdBy Resolver')
+			try {
+				return User.getUserById(parent.createdById, info)
+			} catch (err) {
+				Logger.error(`${err}`)
+				throw new UserInputError(`${err.message}`)
+			}
+		},
 	},
 }
